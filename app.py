@@ -13,7 +13,7 @@ import crypto_utils
 load_dotenv()
 
 app = FastAPI()
-result = urllib.parse.urlparse(os.getenv("DBURL"))
+result = urllib.parse.urlparse(os.getenv("DATABASE_URL"))
 username = result.username
 password = result.password
 database = result.path[1:]

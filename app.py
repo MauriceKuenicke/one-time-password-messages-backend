@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from typing import Optional
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -14,16 +14,9 @@ import crypto_utils
 load_dotenv()
 
 app = FastAPI()
-origins = [
-    "http://localhost",
-    "http://localhost:3000/create",
-    "https://otm-frontend.herokuapp.com",
-    "https://otm-frontend.herokuapp.com/create",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["POST"],
     allow_headers=["*"],
@@ -94,7 +87,7 @@ class Secret(BaseModel):
     passphrase: str
 
 
-@app.post("/secrets")
+@ app.post("/secrets")
 def create_secret(secret: Secret):
     secret_id = crypto_utils.get_uuid()
     sha = crypto_utils.get_sha(secret.passphrase)
@@ -111,7 +104,7 @@ class Passphrase(BaseModel):
     passphrase: str
 
 
-@app.post("/secrets/{secret_id}")
+@ app.post("/secrets/{secret_id}")
 def read_secret(secret_id: str, passphrase: Passphrase):
     row = query_secret(conn, (secret_id,))
     # Delete secrets older than 1Hour

@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -13,6 +14,22 @@ import crypto_utils
 load_dotenv()
 
 app = FastAPI()
+origins = [
+    "http://localhost",
+    "http://localhost:3000/create",
+    "https://otm-frontend.herokuapp.com",
+    "https://otm-frontend.herokuapp.com/create",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)
+
+
 result = urllib.parse.urlparse(os.getenv("DATABASE_URL"))
 username = result.username
 password = result.password
@@ -62,7 +79,7 @@ def delete_secret(conn, vals):
 
 
 def delete_aged_secrets(conn):
-    sql = """ DELETE FROM messages WHERE "pub_time" <=  NOW()+ INTERVAL '1 hours'; """
+    sql = """ DELETE FROM messages WHERE "pub_time" <=  NOW()- INTERVAL '1 hours'; """
     try:
         cur = conn.cursor()
         cur.execute(sql)

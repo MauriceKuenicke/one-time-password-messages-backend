@@ -17,8 +17,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://otm-frontend.herokuapp.com",
-                   "https://otm-frontend.herokuapp.com/",
-                   "localhost"],
+                   "https://otm-frontend.herokuapp.com/"],
     allow_credentials=True,
     allow_methods=["POST"],
     allow_headers=["*"],
